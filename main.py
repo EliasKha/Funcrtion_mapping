@@ -1,4 +1,4 @@
-import customtkinter
+import tkinter
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -12,57 +12,63 @@ class Platform():
 		self.Settings()
 
 	def Settings(self):
-		customtkinter.set_appearance_mode("System")
-		customtkinter.set_default_color_theme("blue")
-		self.app = customtkinter.CTk()
-		self.app.geometry("720x420")
+
+		self.app = tkinter.Tk()
+		self.app.geometry("1000x900")
 		self.app.title("Funcion Mapping Platform")
 
-#Clear button
+	#Clear button
 	def ClearButton(self):
 		"""
 		Adds a clear button when called
 		"""
-		clear_button = customtkinter.CTkButton(master=self.app, text="Clear", command=self.gr.clear(self.ax, self.canvas))
-		clear_button.pack(padx=20, pady=10)
+		clear_button = tkinter.Button(master=self.app, text="Clear", command=lambda: self.gr.clear(self.canvas))
+		return clear_button
 
-#plot button
-	def PlotButton(self):
+	#plot button
+	def PlotButton(self, entry):
 		"""
 		Adds a PLot button when called
 		"""
-		plot_button = customtkinter.CTkButton(master=self.app, text="Plot", command=self.gr.plot(self.ax, self.canvas))
-		plot_button.pack(padx=20, pady=10)
+		plot_button = tkinter.Button(master=self.app, text="Plot", command=lambda: self.gr.plot(self.canvas, entry))
+		return plot_button
 
-#Graph1
+	def SearchBar(self):
+		search_bar = tkinter.Entry(master=self.app)
+		return search_bar
+
+	#Graph1
 	def GraphSettings(self):
-		self.fig, self.ax = plt.subplots()
-		self.canvas = FigureCanvasTkAgg(self.fig, master = self.app)
+		self.canvas = FigureCanvasTkAgg(self.gr.fig, master = self.app)
 		self.canvas.get_tk_widget().pack()
-
+	
+	
 	def System(self):
+		self.SearchBar().pack()
 		self.GraphSettings()
-		self.ClearButton()
-		self.PlotButton()
+		self.ClearButton().pack()
+		self.PlotButton(self.SearchBar().get()).pack()
 		self.app.mainloop()
 
 
 class Graph():
 
 	def __init__(self) -> None:
-		pass
+		self.fig, self.ax = plt.subplots()
 		
-	def clear(self, ax, canvas):
-		ax.clear()
+	def clear(self, canvas):
+		self.ax.clear()
 		canvas.draw()
 		print("clear")
 
-	def plot(self, ax, canvas):
-		ax.clear()
+	def plot(self, canvas, entry):
+		self.ax.clear()
 		x=np.random.randint(0,10,10)
 		y=np.random.randint(0,10,10)
-		ax.scatter(x,y)
+		self.ax.scatter(x,y)
 		canvas.draw()
+		print("plot")
+		print(entry)
 
 
 
