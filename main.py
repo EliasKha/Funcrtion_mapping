@@ -12,7 +12,6 @@ class Platform():
 		self.Settings()
 
 	def Settings(self):
-
 		self.app = tkinter.Tk()
 		self.app.geometry("1000x900")
 		self.app.title("Funcion Mapping Platform")
@@ -26,16 +25,16 @@ class Platform():
 		return clear_button
 
 	#plot button
-	def PlotButton(self, entry):
+	def PlotButton(self):
 		"""
 		Adds a PLot button when called
 		"""
-		plot_button = tkinter.Button(master=self.app, text="Plot", command=lambda: self.gr.plot(self.canvas, entry))
+		plot_button = tkinter.Button(master=self.app, text="Plot", command=lambda: self.gr.plot(self.canvas, self.entry.get()))
 		return plot_button
 
-	def SearchBar(self):
-		search_bar = tkinter.Entry(master=self.app)
-		return search_bar
+	def Entry(self):
+		entry = tkinter.Entry(master=self.app)
+		return entry
 
 	#Graph1
 	def GraphSettings(self):
@@ -44,42 +43,50 @@ class Platform():
 	
 	
 	def System(self):
-		self.SearchBar().pack()
+		self.entry = self.Entry()
+		self.entry.pack()
 		self.GraphSettings()
 		self.ClearButton().pack()
-		self.PlotButton(self.SearchBar().get()).pack()
+		self.PlotButton().pack()
 		self.app.mainloop()
 
 
 class Graph():
 
 	def __init__(self) -> None:
+		self.plot_length = [-5, 5, -100, 100]
 		self.fig, self.ax = plt.subplots()
+		self.ax.axis(self.plot_length)
+		self.ax.grid(True)
 		
 	def clear(self, canvas):
 		self.ax.clear()
+		self.ax.axis(self.plot_length)
+		self.ax.grid(True)
 		canvas.draw()
 		print("clear")
 
 	def plot(self, canvas, entry):
 		self.ax.clear()
-		x=np.random.randint(0,10,10)
-		y=np.random.randint(0,10,10)
-		self.ax.scatter(x,y)
+		self.ax.axis(self.plot_length)
+		self.ax.grid(True)
+		x = np.arange(-50,50.0,1)
+		y = self.calculator(x, entry)
+
+
+		self.ax.plot(x,y)
 		canvas.draw()
 		print("plot")
-		print(entry)
+	
+	def calculator(self,input_list, entry):
+		output_list = []
+		for x in input_list:
+			output_list.append(eval(entry))
+		return output_list
 
 
 
 if __name__ == '__main__':
 	appli = Platform()
 	appli.System()
-
-
-# Plotting
-# Need to add a bar
-# Make the bar share a function to plot
-# Add a clearing button 
-# Add a Plotting button
 
